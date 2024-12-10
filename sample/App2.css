@@ -1,5 +1,5 @@
 body {
-  background: #08438B;
+  background: linear-gradient(180deg, #4FC3F7, #1E88E5);
 }
 
 #root {
@@ -14,7 +14,12 @@ body {
 }
 
 .center-line {
-  text-align: center;
+  font-family: 'Orbitron', sans-serif; /* 使用 Orbitron 字体 */
+  font-size: 24px; /* 字体大小加大 */
+  font-weight: bold; /* 加粗字体 */
+  color: #FFD700; /* 橙色文字 */
+  text-align: center; /* 居中显示文本 */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* 添加阴影 */
 }
 
 .btn-style {

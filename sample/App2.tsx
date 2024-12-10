@@ -5,21 +5,26 @@ import { prizeSett } from './request';
 import './App2.css';
 
 function App2() {
+
   var columns = [{
-    title: '日期',
-    dataIndex: 'name'
+    title: 'Data',
+    dataIndex: 'name',
+    align: 'center',
   }, {
-    title: '年龄',
-    dataIndex: 'age'
+    title: 'Age',
+    dataIndex: 'age',
+    align: 'center',
   }, {
-    title: '住址',
-    dataIndex: 'address'
+    title: 'Address',
+    dataIndex: 'address',
+    align: 'center',
   }, {
-    title: '操作',
+    title: 'Deposit/withdraw',
     dataIndex: '',
+    align: 'center',
     render: function(record) {
-      return <Button type="primary" className='ant-btn-sm' onClick={() => showModal(record)}>Withdrawal</Button>
-      }
+      return <Button type="primary" className='ant-btn-sm' onClick={() => showModal(record)}>Withdrawal</Button>;
+    }
   }];
 
   var data: any = [];
@@ -134,12 +139,12 @@ function App2() {
 
   return (
     <div>
-      <div className='main-body'>
-        <div className='center-line'>
-          中奖记录
+      <div className="main-body">
+        <div className="center-line">
+          Winners List
         </div>
-        <div className='table-warpper'>
-          <Table columns={columns} dataSource={data} pagination={pagination} size="small" onChange={handlePageChange}/>
+        <div className="table-warpper">
+          <Table columns={columns} dataSource={data} pagination={pagination} size="small" onChange={handleChange} />
         </div>
       </div>
       <Modal title="Withdrawal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
