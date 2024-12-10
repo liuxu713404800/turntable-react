@@ -43,10 +43,14 @@ function App2() {
 
   var pagination = {
     total: data.length,
-    // hideOnSinglePage: true,
+    hideOnSinglePage: true,
     pageSize: 4,
     current: currentPage,
-    showSizeChanger: true,
+    showSizeChanger: true
+  };
+
+  const handlePageChange = (value) => {
+    setCurrentPage(parseInt(value.current));
   };
 
   const handleChange = (value) => {
@@ -63,6 +67,12 @@ function App2() {
           <Table columns={columns} dataSource={data} pagination={pagination} size="small" onChange={handleChange} />
         </div>
       </div>
+      <Modal title="Withdrawal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        <Input placeholder="please input your username" prefix={<UserOutlined />} />
+        <Input placeholder="please input your email" prefix={<MailOutlined />} />
+        <Input placeholder="please input your phone" prefix={<PhoneOutlined />} />
+        <Input placeholder="please input your account" prefix={<AccountBookOutlined />} />
+      </Modal>
     </div>
   );
 }
