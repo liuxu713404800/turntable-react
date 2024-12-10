@@ -1,6 +1,6 @@
 import React from 'react';
-import Turntable from '../lib/turntable';
 import { Button } from 'antd';
+import Turntable from '../lib/turntable';
 import { showToast } from './toast';
 import { getTgUser, fetchPrizes, getPrize } from './request';
 import './App.css';
@@ -37,7 +37,7 @@ function getPrizeBackgrounds() {
     prizeBackgrounds = prizeBackgrounds.concat(backgroundUnit);
   }
   // 下面的含义是，不要让两个相同块的背景颜色拼在一起
-  const rest = prizeSize - times * unitSize; 
+  const rest = prizeSize - times * unitSize;
   if (rest == 0) {
     return prizeBackgrounds;
   }
@@ -56,8 +56,8 @@ function getPrizeList() {
   for (let i = 0; i < prizeSize; i++) {
     prizeList.push({ 
       texts: [
-        {text: 'Prize Value', fontStyle: '13px Arial', fontColor: 'rgba(70, 47, 47, 1)', fromCenter: 0.8},
-        {text: `${i} BDT`, fontStyle: '13px Arial', fontColor: 'rgba(255, 40, 40, 1)', fromCenter: 0.68}],
+        // {text: 'Value', fontStyle: 'baseFontStyle', fontColor: 'rgba(70, 47, 47, 1)', fromCenter: 0.8},
+        {text: `${i} BDT`, fontStyle: 'baseFontStyle', fontColor: 'rgba(255, 40, 40, 1)', fromCenter: 0.8}],
       background: prizeBackgrounds[i],
       images: [{
           src: '../sample/gift.png',
@@ -118,11 +118,12 @@ function App() {
   return (
     <div className='main-body'>
       <div className='header'>
-        <Button type="primary" className='share-btn'>Share</Button>
+        <Button type="primary" className='share-btn'>&#9776;</Button>
+        <Button type="primary" className='share-btn'>&#x1F517;</Button>
       </div>
       <div className="turntable">
         <Turntable
-          size={400}
+          size={275}
           prizes={prizeList}
           onStart={fetchPrizeResult}
           onComplete={complete}
@@ -138,5 +139,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;

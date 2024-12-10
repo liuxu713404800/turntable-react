@@ -3,6 +3,7 @@ body {
 }
 
 #root {
+  background: linear-gradient(180deg, #4FC3F7, #1E88E5);
   width: 100%;
   overflow: hidden;
   display: flex;
@@ -18,10 +19,41 @@ body {
   display: flex;
   flex-direction: row-reverse;
 }
+
 .share-btn {
   margin: 10px;
-  width: 100px;
+  width: 40px; /* 设置小圆形按钮的宽度 */
+  height: 40px; /* 高度与宽度相等，形成圆形 */
+  padding: 0; /* 移除内边距 */
+  font-size: 20px; /* 设置字体大小 */
+  font-weight: bold; /* 加粗字体 */
+  color: #ffffff; /* 按钮文字颜色为白色 */
+  background: transparent; /* 背景透明 */
+  border: 2px solid #ffffff; /* 白色边框 */
+  border-radius: 50%; /* 圆形按钮 */
+  cursor: pointer; /* 鼠标悬停时显示手型 */
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  transition: all 0.3s ease-in-out; /* 添加平滑的过渡效果 */
 }
+
+.share-btn:hover {
+  background: rgba(255, 255, 255, 0.2); /* 悬停时给透明按钮添加轻微白色背景 */
+  transform: scale(1.1); /* 悬停时按钮略微放大 */
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3); /* 增加悬停时的阴影效果，突出按钮 */
+  border-color: #FEB446; /* 悬停时白色边框变为金黄色 */
+}
+
+.share-btn:focus {
+  outline: none; /* 移除按钮点击时的边框 */
+}
+
+.share-btn:active {
+  transform: scale(0.98); /* 点击时按钮轻微缩小 */
+  box-shadow: none; /* 移除点击时的阴影效果 */
+}
+
 
 .turntable {
   display: flex;
