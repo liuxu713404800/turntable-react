@@ -1,0 +1,27 @@
+body {
+  background: #08438B;
+}
+
+#root {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.main-body {
+  display: block;
+}
+
+.center-line {
+  text-align: center;
+}
+
+.btn-style {
+  margin: 10px;
+  width: 100px;
+}
+
+.table-warpper {
+  padding: 10px;
+}

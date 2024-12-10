@@ -1,0 +1,55 @@
+body {
+  background: #08438B;
+}
+
+#root {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+.main-body {
+  width: 100%;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+}
+.share-btn {
+  margin: 10px;
+  width: 100px;
+}
+
+.turntable {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 375px;
+  height: 375px;
+  margin: 50px auto;
+  background: url(../sample/plate.png) no-repeat center center/100%;
+}
+
+.__turntable-container {
+  margin-top: 4px;
+}
+
+.turntable-pointer {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.pointer-img {
+  position: absolute;
+  bottom: 5px;
+  width: 80px;
+}
