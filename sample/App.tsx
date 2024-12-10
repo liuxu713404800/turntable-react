@@ -8,6 +8,10 @@ import './App.css';
 let canStart = false;
 
 const tgUser = getTgUser();
+// const tgUser = {
+//   userId: 7492382861,
+//   username: 'LiuXu1992'
+// }
 if (!tgUser.userId || !tgUser.username) {
   canStart = false;
   showToast("userId not found");
@@ -16,7 +20,6 @@ if (!tgUser.userId || !tgUser.username) {
 }
 
 async function getPrizes() {
-  const url = "/api/list/prizes";
   const resp = await fetchPrizes();
   if (resp.code !== 200) {
     showToast("feath prizes fail");
@@ -25,9 +28,19 @@ async function getPrizes() {
   return resp.data;
 }
 
-// await getPrizeList();
+const prizes = await getPrizes();
+
+function getPrizeIndex(prizeId) {
+  for (let i = 0; i < prizes.length; i++) {
+    if (i == prizeId) {
+      return i - 1;
+    }
+  }
+  return 0;
+}
+
 // 生成背景图片
-const prizeSize = 10;
+const prizeSize = prizes.length;
 function getPrizeBackgrounds() {
   let prizeBackgrounds: string[] = [];
   const backgroundUnit = ['#62CDD8', '#FFFFFF', '#FEB446'];
@@ -56,8 +69,8 @@ function getPrizeList() {
   for (let i = 0; i < prizeSize; i++) {
     prizeList.push({ 
       texts: [
-        {text: 'Prize Value', fontStyle: '13px Arial', fontColor: 'rgba(70, 47, 47, 1)', fromCenter: 0.8},
-        {text: `${i} BDT`, fontStyle: '13px Arial', fontColor: 'rgba(255, 40, 40, 1)', fromCenter: 0.68}],
+        {text: prizes[i].name , fontStyle: '13px Arial', fontColor: 'rgba(70, 47, 47, 1)', fromCenter: 0.8},
+        {text: `${prizes[i].amount} BDT`, fontStyle: '13px Arial', fontColor: 'rgba(255, 40, 40, 1)', fromCenter: 0.68}],
       background: prizeBackgrounds[i],
       images: [{
           src: '../sample/gift.png',
@@ -80,35 +93,28 @@ function App() {
       showToast('no times!');
       return false;
     }
-    const url = "/api/getPrize?userTgId" + tgUser.userId;
+
     return new Promise<number>((resolve, reject) => {
       getPrize(tgUser.userId).then((res) => {
-        const resultPrizeIndex = 3;
-        if (resultPrizeIndex < 0) { // 未达条件不启动抽奖
-          reject();
-          showToast('something is wrong!');
+        if (res.code == 200) {
+          const prize = res.data;
+          const prizeId = getPrizeIndex(prize.id);
+          resolve(prizeId);
         } else {
-          resolve(resultPrizeIndex);
+          reject();
+          showToast('sorry, you did not win any prize');
         }
       });
-      // setTimeout(() => {
-      //   const resultPrizeIndex = 3;
-      //   if (resultPrizeIndex < 0) { // 未达条件不启动抽奖
-      //     reject();
-      //     showToast('something is wrong!');
-      //   } else {
-      //     resolve(resultPrizeIndex);
-      //   }
-      // }, 90);
     });
   };
 
   const complete = (index: number) => {
-    console.log(`Congratulations - ${[index]} `, prizeList[index]);
+    showToast('congratulations, you have got ' + prizes[index].name);
   };
 
   const timeout = () => {
     console.log('Timeout');
+    showToast("sorry, you did not win any prize");
   };
 
   const stateChange = (drawing: boolean) => {

@@ -25,3 +25,7 @@ body {
 .table-warpper {
   padding: 10px;
 }
+
+.err-msg {
+  color: red;
+}

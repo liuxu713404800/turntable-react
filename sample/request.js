@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = '';
+const BASE_URL = 'https://apis.helangyoshi.online';
 
 export function getTgUser() {
     const res = {
@@ -10,7 +10,6 @@ export function getTgUser() {
     console.log(window.Telegram);
     if (window.Telegram.WebApp) {
         const tgApp = window.Telegram.WebApp;
-        console.log(window.Telegram.WebApp);
         if (tgApp.initDataUnsafe.user) {
             const userInfo = tgApp.initDataUnsafe.user;
             res.userId = userInfo.id;
@@ -48,7 +47,7 @@ export async function getPrizeRecords(userId) {
     return response.data;
 }
 
-export async function PrizeSett(params) {
+export async function prizeSett(params) {
     const url = BASE_URL + "/api/prize/sett";
     const response = await axios.post(url, params, {headers: {'Content-Type': 'application/json'}});
     if (!response || !response.data) {
