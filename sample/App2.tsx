@@ -1,8 +1,14 @@
 import React , {useState} from 'react';
 import { Button, Table } from 'antd';
+import axios from 'axios';
 import './App2.css';
 
 function App2() {
+
+function withdrawal(record) {
+  console.log(record);
+}
+
 
 var columns = [{
   title: '日期',
@@ -16,12 +22,8 @@ var columns = [{
 }, {
   title: '操作',
   dataIndex: '',
-  render: function(text, record) {
-    return <span>
-      <a>
-        提现
-      </a>
-    </span>;
+  render: function(record) {
+    return <Button type="primary" className='ant-btn-sm' onClick={() => withdrawal(record)}>Withdrawal</Button>
   }
 }];
 
