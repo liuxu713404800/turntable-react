@@ -7,7 +7,6 @@ export function getTgUser() {
         userId: '',
         username: '',
     };
-    console.log(window.Telegram);
     if (window.Telegram.WebApp) {
         const tgApp = window.Telegram.WebApp;
         if (tgApp.initDataUnsafe.user) {
@@ -50,6 +49,16 @@ export async function getPrizeRecords(userId) {
 export async function prizeSett(params) {
     const url = BASE_URL + "/api/prize/sett";
     const response = await axios.post(url, params, {headers: {'Content-Type': 'application/json'}});
+    if (!response || !response.data) {
+        return { code: 500, data: {}};
+    }
+    return response.data;
+}
+
+
+export async function getPrizeTimes(userId) {
+    const url = BASE_URL + "/api/prize/times?userTgId=" + userId;
+    const response = await axios.get(url);
     if (!response || !response.data) {
         return { code: 500, data: {}};
     }
