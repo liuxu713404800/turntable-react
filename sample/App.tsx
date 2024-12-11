@@ -1,5 +1,5 @@
 import React , {useState} from 'react';
-import { Button, Table, Modal, Input } from 'antd';
+import {Button, Table, Modal, Input, message} from 'antd';
 import { UserOutlined, MailOutlined, PhoneOutlined, AccountBookOutlined } from '@ant-design/icons';
 import Turntable from '../lib/turntable';
 import { showToast } from './toast';
@@ -69,17 +69,17 @@ const prizeBackgrounds = getPrizeBackgrounds();
 function getPrizeList() {
   let prizeList: any[] = [];
   for (let i = 0; i < prizeSize; i++) {
-    prizeList.push({ 
+    prizeList.push({
       texts: [
         {text: prizes[i].name , fontStyle: '13px Arial', fontColor: 'rgba(70, 47, 47, 1)', fromCenter: 0.8},
         {text: `${prizes[i].amount} BDT`, fontStyle: '13px Arial', fontColor: 'rgba(255, 40, 40, 1)', fromCenter: 0.68}],
       background: prizeBackgrounds[i],
       images: [{
-          src: '../sample/gift.png',
-          width: 25,
-          height: 25,
-          fromCenter: 0.65,
-        }
+        src: '../sample/gift.png',
+        width: 25,
+        height: 25,
+        fromCenter: 0.65,
+      }
       ]
     });
   }
@@ -248,19 +248,55 @@ function App() {
     setAccount(event.target.value);
   };
 
+  const [link, setLink] = useState('');
+  const handleCopyLink = async () => {
+    try {
+      // Extract the methodId from the link
+      const linkElement = document.querySelector('a[href^="api.html#_1_8_"]');
+      const methodId = linkElement.getAttribute('href').split('#')[1];
 
+      // Call the API to get the share link
+      const response = await fetch('/api/share-link', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ methodId })
+      });
+      const { link } = await response.json();
+
+      // Update the component state and copy the link to the clipboard
+      setLink(link);
+      await navigator.clipboard.writeText(link);
+      message.success('Link copied!', 2);
+    } catch (err) {
+      console.error('Failed to copy link:', err);
+      message.error('Failed to copy link.');
+    }
+  };
   return (
-    <div className='main-body'>
-      <div className='header'>
-        <Button type="primary" className='share-btn'>&#9776;</Button>
-        <Button type="primary" className='share-btn'>&#x1F517;</Button>
+    <div className="main-body">
+      <div className="header">
+        <Button type="primary" className="share-btn">&#10006;</Button>
+        <Button
+          type="primary"
+          className="share-btn"
+          onClick={handleCopyLink}
+        >
+          &#x1F517;
+        </Button>
+        {link && (
+          <div>
+            Generated link: <a href={link}>{link}</a>
+          </div>
+        )}
       </div>
       <div className="turntable">
         <Turntable
-          size={275}
-          prizes={prizeList}
-          onStart={fetchPrizeResult}
-          onComplete={complete}
+            size={275}
+            prizes={prizeList}
+            onStart={fetchPrizeResult}
+            onComplete={complete}
           onTimeout={timeout}
           onStateChange={stateChange}
         >
@@ -272,7 +308,7 @@ function App() {
       </div>
       <div className="center-line">Winners List</div>
       <div className="table-warpper">
-          <Table columns={columns} dataSource={data}  pagination={pagination} size="small" onChange={handlePageChange} />
+        <Table columns={columns} dataSource={data} pagination={pagination} size="small" onChange={handlePageChange} />
       </div>
       <Modal title="Withdrawal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <Input placeholder="please input your username" value={username} onChange={handleUsername} prefix={<UserOutlined />} />

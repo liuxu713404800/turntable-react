@@ -1,5 +1,5 @@
 body {
-  background: #08438B;
+  background: #1E88E5;
 }
 
 #root {
@@ -101,7 +101,7 @@ body {
 }
 
 .table-warpper {
-  padding: 10px;
+    padding: 10px;
 }
 
 .err-msg {
