@@ -64,3 +64,13 @@ export async function getPrizeTimes(userId) {
     }
     return response.data;
 }
+
+
+export async function getCopyLink(userId) {
+    const url = BASE_URL + "/api/invite/link?userTgId=" + userId;
+    const response = await axios.get(url);
+    if (!response || !response.data) {
+        return { code: 500, data: {}};
+    }
+    return response.data;
+}
