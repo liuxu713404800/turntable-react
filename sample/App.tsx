@@ -1,17 +1,15 @@
-import React from 'react';
-import { Button } from 'antd';
+import React , {useState} from 'react';
+import { Button, Table, Modal, Input } from 'antd';
+import { UserOutlined, MailOutlined, PhoneOutlined, AccountBookOutlined } from '@ant-design/icons';
 import Turntable from '../lib/turntable';
 import { showToast } from './toast';
-import { getTgUser, fetchPrizes, getPrize } from './request';
+import { getTgUser, fetchPrizes, getPrize, getPrizeRecords, prizeSett } from './request';
 import './App.css';
 
 let canStart = false;
 
-// const tgUser = getTgUser();
-const tgUser = {
-  userId: 7492382861,
-  username: 'LiuXu1992'
-}
+const tgUser = getTgUser();
+
 if (!tgUser.userId || !tgUser.username) {
   canStart = false;
   showToast("userId not found");
@@ -29,6 +27,10 @@ async function getPrizes() {
 }
 
 const prizes = await getPrizes();
+let prizeNameMap = {};
+for (let i = 0; i < prizes.length; i++) {
+  prizeNameMap[prizes[i].id] = prizes[i].name;
+}
 
 function getPrizeIndex(prizeId) {
   for (let i = 0; i < prizes.length; i++) {
@@ -86,8 +88,14 @@ function getPrizeList() {
 
 const prizeList = getPrizeList();
 
+const resp2 = await getPrizeRecords(tgUser.userId);
+let recordList = [];
+if (resp2.code == 200) {
+  recordList = resp2.data;
+}
 
 function App() {
+
   const fetchPrizeResult = (abort: () => void) => {
     if (!canStart) { // 未达条件不启动抽奖
       showToast('no times!');
@@ -121,6 +129,126 @@ function App() {
     console.log(drawing ? 'begin' : 'end');
   };
 
+  var columns = [{
+    title: 'Time',
+    key: 'createTime',
+    dataIndex: 'createTime'
+  }, {
+    title: 'Prize',
+    key: 'prizeId',
+    dataIndex: '',
+    render: function(record) {
+      return <span> {prizeNameMap[record.prizeId]} </span>;
+    }
+  }, {
+    title: 'Amount',
+    key: 'amount',
+    dataIndex: 'amount',
+  }, {
+    title: 'Witdraw',
+    key: 'witdraw',
+    dataIndex: '',
+    render: function(record) {
+      return <Button type="primary" className='ant-btn-sm' onClick={() => showModal(record)}>Deposit</Button>;
+    }
+  }];
+
+  const data = recordList;
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  var pagination = {
+    total: data.length,
+    hideOnSinglePage: true,
+    pageSize: 4,
+    current: currentPage,
+    showSizeChanger: true
+  };
+
+  const handlePageChange = (value) => {
+    setCurrentPage(parseInt(value.current));
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [recordId, setRecordId] = useState(0);
+
+  let validatorFlag = false;
+  let errMsg = '';
+
+  const showModal = (record) => {
+    setIsModalOpen(true);
+    setRecordId(record.id);
+  };
+
+  const validatePhone = (phone) => {
+    const regex = /^\+?([0-9]{1,3})?[-. ]?(\(?[0-9]{1,4}\)?)?[-. ]?([0-9]{1,4})[-. ]?([0-9]{1,4})[-. ]?([0-9]{1,9})$/;
+    return regex.test(phone);
+  }
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    return emailRegex.test(email);
+  };
+
+
+  const handleOk = () => {
+    const params = {
+      recordId: recordId,
+      username: username,
+      phone: phone,
+      email: email,
+      account: account
+    };
+
+
+    prizeSett(params).then((res) => {
+      if (res.code == 200) {
+        showToast("success");
+      } else {
+        showToast("error");
+      }
+      validatorFlag = false;
+      errMsg = "";
+    });
+
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const clearUserinfo = () => {
+    validatorFlag = true;
+    errMsg = "";
+    setRecordId(0)
+    setUsername("");
+    setEmail("");
+    setPhone("");
+    setAccount("");
+  }
+
+  const [username, setUsername] = useState('');
+  const handleUsername = (event) => {
+    setUsername(event.target.value);
+  };
+
+  const [email, setEmail] = useState('');
+  const handleEmail = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const [phone, setPhone] = useState('');
+  const handlePhone = (event) => {
+    setPhone(event.target.value);
+  };
+
+  const [account, setAccount] = useState('');
+  const handleAccount = (event) => {
+    setAccount(event.target.value);
+  };
+
+
   return (
     <div className='main-body'>
       <div className='header'>
@@ -142,6 +270,18 @@ function App() {
           </div>
         </Turntable>
       </div>
+      <div className="center-line">Winners List</div>
+      <div className="table-warpper">
+          <Table columns={columns} dataSource={data}  pagination={pagination} size="small" onChange={handlePageChange} />
+      </div>
+      <Modal title="Withdrawal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+        <Input placeholder="please input your username" value={username} onChange={handleUsername} prefix={<UserOutlined />} />
+        {/* <Input placeholder="please input your email" value={email} onChange={(e) => {if (validateEmail(e.target.value)) { setEmail(e.target.value);}}} prefix={<MailOutlined />} /> {!validateEmail(email) && <span>Invalid email address</span>} */}
+        <Input placeholder="please input your email" value={email} onChange={handleEmail} prefix={<MailOutlined />} />
+        <Input placeholder="please input your phone" value={phone} onChange={handlePhone} prefix={<PhoneOutlined />} />
+        <Input placeholder="please input your bkash id" value={account} onChange={handleAccount} prefix={<AccountBookOutlined />} />
+        {/* {!validatorFlag && <span className='err-msg'>{111}</span>} */}
+      </Modal>
     </div>
   );
 }
