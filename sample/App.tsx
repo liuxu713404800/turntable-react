@@ -109,9 +109,26 @@ if (resp3.code == 200) {
 
 let link = '';
 const resp4 = await getCopyLink(tgUser.userId);
-console.log(resp4);
 if (resp4.code == 200) {
-  link = resp4.data;
+  link = resp4.data;  
+}
+
+function formatTime(dateString) {
+  var date = new Date(dateString);
+  let year = date.getFullYear();
+  let month = date.getMonth() + 1;
+  let day = date.getDate();
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  let seconds = date.getSeconds();
+ 
+  let monthStr = month < 10 ? "0" + month : month;
+  let dayStr = day < 10 ? "0" + day : day;
+  let hoursStr = hours < 10 ? "0" + hours : hours;
+  let minutesStr = minutes < 10 ? "0" + minutes : minutes;
+  let secondsStr = seconds < 10 ? "0" + seconds : seconds;
+ 
+  return `${year}-${monthStr}-${dayStr} ${hoursStr}:${minutesStr}:${secondsStr}`;
 }
 
 function App() {
@@ -169,7 +186,7 @@ function App() {
     key: 'createTime',
     dataIndex: 'createTime',
     render: function(record) {
-      let time = record.substring(0, 10) + ' ' + record.substring(11, 19);
+      let time = formatTime(record);
       return <span> {time} </span>;
     }
   }, {
@@ -306,9 +323,14 @@ function App() {
 
   const [copyLink, setLink] = useState(link);
   const handleCopyLink= (event) => {
-    console.log(event);
+    showToast("your invite link is copied");
+    navigator.clipboard.writeText(copyLink);
   };
-  // const handleCopyLink = async () => {
+  const leavePage= (event) => {
+    console.log("leavePage");
+    window.close();
+  };
+
   //   try {
   //     // Extract the methodId from the link
   //     const linkElement = document.querySelector('a[href^="api.html#_1_8_"]');
@@ -336,19 +358,8 @@ function App() {
   return (
     <div className="main-body">
       <div className="header">
-        <Button type="primary" className="share-btn">&#10006;</Button>
-        <Button
-          type="primary"
-          className="share-btn"
-          onClick={handleCopyLink}
-        >
-          &#x1F517;
-        </Button>
-        {link && (
-          <div>
-            Generated link: <a href={link}>{link}</a>
-          </div>
-        )}
+        <Button type="primary" className="share-btn" onClick={leavePage}>&#10006;</Button>
+        <Button type="primary" className="share-btn" onClick={handleCopyLink}>&#x1F517;</Button>
       </div>
       <div className="turntable">
         <Turntable
@@ -356,9 +367,9 @@ function App() {
             prizes={prizeList}
             onStart={fetchPrizeResult}
             onComplete={complete}
-          onTimeout={timeout}
-          onStateChange={stateChange}
-          duration={3000}
+            onTimeout={timeout}
+            onStateChange={stateChange}
+            duration={3000}
         >
           {/* 转盘指针 点击按钮 */}
           <div className="turntable-pointer">
@@ -371,11 +382,7 @@ function App() {
       </div>
       <div className="center-line">Winners List</div>
       <div className="table-warpper">
-<<<<<<< HEAD
           <Table columns={columns} dataSource={recordList}  pagination={pagination} size="small" onChange={handlePageChange} />
-=======
-        <Table columns={columns} dataSource={data} pagination={pagination} size="small" onChange={handlePageChange} />
->>>>>>> a92eb3991a672c4e7028ec04dfa0a5afaafcfb12
       </div>
       <Modal title="Withdrawal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <Input placeholder="please input your username" value={username} onChange={handleUsername} prefix={<UserOutlined />} />
