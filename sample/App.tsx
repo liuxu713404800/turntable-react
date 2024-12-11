@@ -6,7 +6,7 @@ import { showToast } from './toast';
 import { getTgUser, fetchPrizes, getPrize, getPrizeRecords, prizeSett, getPrizeTimes, getCopyLink } from './request';
 import './App.css';
 
-let canStart = false;
+// let canStart = false;
 
 const tgUser = getTgUser();
 // let tgUser = {
@@ -14,12 +14,12 @@ const tgUser = getTgUser();
 //   username: "LiuXu1992"
 // }
 
-if (!tgUser.userId || !tgUser.username) {
-  canStart = false;
-  showToast("userId not found");
-} else {
-  canStart = true;
-}
+// if (!tgUser.userId || !tgUser.username) {
+//   canStart = false;
+//   // showToast("userId not found");
+// } else {
+//   canStart = true;
+// }
 
 async function getPrizes() {
   const resp = await fetchPrizes();
@@ -134,10 +134,10 @@ function formatTime(dateString) {
 function App() {
 
   const fetchPrizeResult = (abort: () => void) => {
-    if (!canStart) { // 未达条件不启动抽奖
-      showToast('no times!');
-      return false;
-    }
+    // if (!canStart) { // 未达条件不启动抽奖
+    //   showToast('no times!');
+    //   return false;
+    // }
     if (leftNum <= 0) { // 未达条件不启动抽奖
       showToast('no times!');
       return false;
