@@ -1,4 +1,4 @@
-import React , {useState} from 'react';
+import React , { useState, useEffect } from 'react';
 import {Button, Table, Modal, Input, message} from 'antd';
 import { UserOutlined, MailOutlined, PhoneOutlined, AccountBookOutlined } from '@ant-design/icons';
 import Turntable from '../lib/turntable';
@@ -133,13 +133,13 @@ function formatTime(dateString) {
 
 function App() {
 
+  let [leftNum, setLeftNum] = useState(prizeTimes);
+  let [recordList, setRecordList] = useState(records);
+  
   const fetchPrizeResult = (abort: () => void) => {
-    // if (!canStart) { // 未达条件不启动抽奖
-    //   showToast('no times!');
-    //   return false;
-    // }
+
     if (leftNum <= 0) { // 未达条件不启动抽奖
-      showToast('no times!');
+      showToast('no times! you can win the lottery by inviting others');
       return false;
     }
 
@@ -175,15 +175,12 @@ function App() {
   };
 
   const timeout = () => {
-    console.log('Timeout');
     showToast("sorry, you did not win any prize");
   };
 
   const stateChange = (drawing: boolean) => {
     console.log(drawing ? 'begin' : 'end');
   };
-
-  const [recordList, setRecordList] = useState(records);
 
   var columns = [{
     title: 'Time',
@@ -257,7 +254,6 @@ function App() {
     return emailRegex.test(email);
   };
 
-
   const handleOk = () => {
     if (!validatePhone(phone)) {
       setValidatorFlag(false);
@@ -323,8 +319,6 @@ function App() {
     setAccount(event.target.value);
   };
 
-  const [leftNum, setLeftNum] = useState(prizeTimes);
-
   const [copyLink, setLink] = useState(link);
   const handleCopyLink= (event) => {
     showToast("your invite link is copied");
@@ -335,30 +329,6 @@ function App() {
     window.close();
   };
 
-  //   try {
-  //     // Extract the methodId from the link
-  //     const linkElement = document.querySelector('a[href^="api.html#_1_8_"]');
-  //     const methodId = linkElement.getAttribute('href').split('#')[1];
-
-  //     // Call the API to get the share link
-  //     const response = await fetch('/api/share-link', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: JSON.stringify({ methodId })
-  //     });
-  //     const { link } = await response.json();
-
-  //     // Update the component state and copy the link to the clipboard
-  //     setLink(link);
-  //     await navigator.clipboard.writeText(link);
-  //     message.success('Link copied!', 2);
-  //   } catch (err) {
-  //     console.error('Failed to copy link:', err);
-  //     message.error('Failed to copy link.');
-  //   }
-  // };
   return (
     <div className="main-body">
       <div className="header">
@@ -374,6 +344,7 @@ function App() {
             onTimeout={timeout}
             onStateChange={stateChange}
             duration={3000}
+            timeout={5000}
         >
           {/* 转盘指针 点击按钮 */}
           <div className="turntable-pointer">
@@ -382,7 +353,7 @@ function App() {
         </Turntable>
       </div>
       <div className='bonus-line'>
-          You still have <span className='red-msg'> {leftNum} </span> lucky draws left
+          You still have <span className='red-msg' id='left-num'> {leftNum} </span> lucky draws left
       </div>
       <div className="center-line">Winners List</div>
       <div className="table-warpper">
@@ -399,6 +370,5 @@ function App() {
     </div>
   );
 }
-
 
 export default App;
