@@ -8,11 +8,11 @@ import './App.css';
 
 let canStart = false;
 
-// const tgUser = getTgUser();
-let tgUser = {
-  userId: 7492382861,
-  username: "LiuXu1992"
-}
+const tgUser = getTgUser();
+// let tgUser = {
+//   userId: 7492382861,
+//   username: "LiuXu1992"
+// }
 
 if (!tgUser.userId || !tgUser.username) {
   canStart = false;
