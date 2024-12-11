@@ -138,6 +138,10 @@ function App() {
       showToast('no times!');
       return false;
     }
+    if (leftNum <= 0) { // 未达条件不启动抽奖
+      showToast('no times!');
+      return false;
+    }
 
     return new Promise<number>((resolve, reject) => {
       getPrize(tgUser.userId).then((res) => {
