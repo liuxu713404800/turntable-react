@@ -114,21 +114,8 @@ if (resp4.code == 200) {
 }
 
 function formatTime(dateString) {
-  var date = new Date(dateString);
-  let year = date.getFullYear();
-  let month = date.getMonth() + 1;
-  let day = date.getDate();
-  let hours = date.getHours();
-  let minutes = date.getMinutes();
-  let seconds = date.getSeconds();
- 
-  let monthStr = month < 10 ? "0" + month : month;
-  let dayStr = day < 10 ? "0" + day : day;
-  let hoursStr = hours < 10 ? "0" + hours : hours;
-  let minutesStr = minutes < 10 ? "0" + minutes : minutes;
-  let secondsStr = seconds < 10 ? "0" + seconds : seconds;
- 
-  return `${year}-${monthStr}-${dayStr} ${hoursStr}:${minutesStr}:${secondsStr}`;
+  var str = new Date(dateString). toLocaleString(undefined, {timeZone: 'Asia/Kolkata'});
+  return str.replaceAll("/", "-");
 }
 
 function App() {
@@ -274,7 +261,7 @@ function App() {
     };
     prizeSett(params).then((res) => {
       if (res.code == 200) {
-        showToast("success");
+        showToast("submitted successfully, payment will be made later");
       } else {
         showToast("error");
       }
@@ -345,6 +332,7 @@ function App() {
             onStateChange={stateChange}
             duration={3000}
             timeout={5000}
+            auto={false}
         >
           {/* 转盘指针 点击按钮 */}
           <div className="turntable-pointer">

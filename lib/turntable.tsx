@@ -45,6 +45,10 @@ const Turntable: FC<TurntableTypes.Props> = (props: TurntableTypes.Props) => {
   };
 
   const run = () => {
+    if (!controller) {
+      controller = new Controller(size, prizes, opts);
+      controller.init();
+    }
     if (controller.isDrawing) return;
     const startResult = onStart(controller.abort.bind(controller));
     if (startResult instanceof Promise) {
