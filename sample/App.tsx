@@ -98,13 +98,15 @@ if (resp2.code == 200) {
   for (let i = 0; i < resp2.data.length; i++) {
     resp2.data[i].key = resp2.data[i].id;
   }
-  records = resp2.data;
+  records = resp2.data.reverse();
 }
 
 let prizeTimes = 0;
+let inviterNum = 0;
 const resp3 = await getPrizeTimes(tgUser.userId);
 if (resp3.code == 200) {
   prizeTimes = resp3.data.times;
+  inviterNum = resp3.data.inviterCount;
 }
 
 let link = '';
@@ -114,13 +116,14 @@ if (resp4.code == 200) {
 }
 
 function formatTime(dateString) {
-  var str = new Date(dateString). toLocaleString(undefined, {timeZone: 'Asia/Kolkata'});
+  var str = new Date(dateString).toLocaleString(undefined, {timeZone: 'Asia/Kolkata'});
   return str.replaceAll("/", "-");
 }
 
 function App() {
 
   let [leftNum, setLeftNum] = useState(prizeTimes);
+  let [inviterCount, setInviterCount] = useState(inviterNum);
   let [recordList, setRecordList] = useState(records);
   
   const fetchPrizeResult = (abort: () => void) => {
@@ -151,12 +154,13 @@ function App() {
         for (let i = 0; i < res.data.length; i++) {
           res.data[i].key = res.data[i].id;
         }
-        setRecordList(res.data);
+        setRecordList(res.data.reverse());
       }
     });
     getPrizeTimes(tgUser.userId).then(res => {
       if (res.code == 200) {
         setLeftNum(res.data.times);
+        setInviterCount(res.data.inviterCount);
       }
     });
   };
@@ -185,18 +189,14 @@ function App() {
       return <span> {prizeNameMap[record.prizeId]} </span>;
     }
   }, {
-    title: 'Amount',
-    key: 'amount',
-    dataIndex: 'amount',
-  }, {
-    title: 'Witdraw',
-    key: 'witdraw',
+    title: 'Withdrawal',
+    key: 'withdrawal',
     dataIndex: '',
     render: function(record) {
       if (record.status == 1) {
-        return <Button type="primary" className='ant-btn-sm' onClick={() => showModal(record)}>Witdraw</Button>;
+        return <Button type="primary" className='ant-btn-sm' onClick={() => showModal(record)}>Withdrawal</Button>;
       } else {
-        return <Button type="primary" className='ant-btn-sm' onClick={() => showModal(record)} disabled={true}>Witdraw</Button>;
+        return <Button type="primary" className='ant-btn-sm' onClick={() => showModal(record)} disabled={true}>Withdrawal</Button>;
       }
     }
   }];
@@ -262,6 +262,14 @@ function App() {
     prizeSett(params).then((res) => {
       if (res.code == 200) {
         showToast("submitted successfully, payment will be made later");
+        getPrizeRecords(tgUser.userId).then(res => {
+          if (res.code == 200) {
+            for (let i = 0; i < res.data.length; i++) {
+              res.data[i].key = res.data[i].id;
+            }
+            setRecordList(res.data.reverse());
+          }
+        });
       } else {
         showToast("error");
       }
@@ -322,6 +330,9 @@ function App() {
         <Button type="primary" className="share-btn" onClick={leavePage}>&#10006;</Button>
         <Button type="primary" className="share-btn" onClick={handleCopyLink}>&#x1F517;</Button>
       </div>
+      <div className='invite-line'>
+          You have invited <span className='yellow-msg'> {inviterCount} </span>friends
+      </div>
       <div className="turntable">
         <Turntable
             size={275}
@@ -341,7 +352,7 @@ function App() {
         </Turntable>
       </div>
       <div className='bonus-line'>
-          You still have <span className='red-msg' id='left-num'> {leftNum} </span> lucky draws left
+          You still have <span className='red-msg'> {leftNum} </span> lucky draws left
       </div>
       <div className="center-line">Winners List</div>
       <div className="table-warpper">

@@ -106,6 +106,18 @@ body {
   margin-bottom: 5px;
 }
 
+.invite-line {
+  font-family: 'Orbitron', sans-serif; /* 使用 Orbitron 字体 */
+  font-size: 20px; /* 字体大小加大 */
+  font-weight: bold; /* 加粗字体 */
+  color: #f6f7f9; /* 橙色文字 */
+  text-align: center; /* 居中显示文本 */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* 添加阴影 */
+  margin-top: 5px;
+  margin-bottom: -35px;
+}
+
+
 .btn-style {
   margin: 10px;
   width: 100px;
@@ -117,4 +129,8 @@ body {
 
 .red-msg {
   color: red;
+}
+
+.yellow-msg {
+  color: #e9db1b;
 }
